@@ -1,0 +1,8 @@
+@model IReadOnlyList<CategoriaVm>
+@{ ViewData["Title"] = "Categorías"; var includeInactive = ViewBag.IncluirInactivas is true; }
+<div class="page-head"><div><span class="eyebrow">CATÁLOGO</span><h1>Categorías</h1><p>Organice los tipos de bicicletas de la tienda.</p></div><a class="button primary" asp-action="Crear">+ Nueva categoría</a></div>
+<form method="get" class="filters"><label>Buscar<input name="buscar" value="@ViewBag.Buscar" placeholder="Nombre de categoría" /></label><label class="check">@if(includeInactive){<input type="checkbox" name="incluirInactivas" value="true" checked/>}else{<input type="checkbox" name="incluirInactivas" value="true"/>} Incluir inactivas</label><button class="button dark">Filtrar</button><a class="button ghost" asp-action="Index">Limpiar</a></form>
+<div class="table-card"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th></th></tr></thead><tbody>
+@foreach (var item in Model) { <tr><td class="strong">@item.Name</td><td>@(item.Description ?? "—")</td><td><span class="status @(item.Active ? "ok" : "off")">@(item.Active ? "Activa" : "Inactiva")</span></td><td class="actions"><a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>@if(item.Active){<form asp-action="Eliminar" asp-route-id="@item.Id" method="post" data-confirm="¿Desactivar esta categoría?"><button type="submit" class="link danger"><i class="bi bi-trash"></i> Desactivar</button></form>}</td></tr> }
+@if (!Model.Any()) { <tr><td colspan="4" class="empty">No se encontraron categorías.</td></tr> }
+</tbody></table></div>

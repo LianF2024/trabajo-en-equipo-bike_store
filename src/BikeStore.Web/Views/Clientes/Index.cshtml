@@ -1,0 +1,8 @@
+@model IReadOnlyList<ClienteVm>
+@{ ViewData["Title"] = "Clientes"; }
+<div class="page-head"><div><span class="eyebrow">RELACIONES</span><h1>Clientes</h1><p>Consulte por cédula o apellido.</p></div><a class="button primary" asp-action="Crear">+ Nuevo cliente</a></div>
+<form method="get" class="filters"><label>Cédula/RUC<input name="cedula" value="@ViewBag.Cedula"/></label><label>Apellido<input name="apellido" value="@ViewBag.Apellido"/></label><button type="submit" class="button dark">Filtrar</button><a class="button ghost" asp-action="Index">Limpiar</a></form>
+<div class="table-card"><table><thead><tr><th>Cédula/RUC</th><th>Cliente</th><th>Contacto</th><th>Acciones</th></tr></thead><tbody>
+@foreach (var item in Model) { <tr><td>@item.Identification</td><td class="strong">@item.FullName</td><td>@(item.Phone ?? "—")<br/><small>@(item.Email ?? "Sin correo")</small></td><td class="actions"><a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a><a asp-controller="Ventas" asp-action="Index" asp-route-clienteId="@item.Id"><i class="bi bi-receipt"></i> Ventas</a><form asp-action="Eliminar" asp-route-id="@item.Id" method="post" data-confirm="¿Eliminar este cliente?"><button type="submit" class="link danger"><i class="bi bi-trash"></i> Eliminar</button></form></td></tr> }
+@if (!Model.Any()) { <tr><td colspan="4" class="empty">No se encontraron clientes.</td></tr> }
+</tbody></table></div>

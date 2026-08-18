@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.0.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Domain", "src\BikeStore.Domain\BikeStore.Domain.csproj", "{D325491A-0CCF-4697-B6BB-C2BA51D8DAF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Application", "src\BikeStore.Application\BikeStore.Application.csproj", "{36C5A8BA-6B1B-4EDD-801F-23E15B4557BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Infrastructure", "src\BikeStore.Infrastructure\BikeStore.Infrastructure.csproj", "{11F49DFB-01D2-48A6-9155-B2A9206BC0CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Api", "src\BikeStore.Api\BikeStore.Api.csproj", "{4A6E9BA0-5411-42F1-9871-149EB5891C89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Web", "src\BikeStore.Web\BikeStore.Web.csproj", "{C010365C-1379-4D25-BF6B-4D8478B7F339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore.Application.Tests", "tests\BikeStore.Application.Tests\BikeStore.Application.Tests.csproj", "{F5EAF3A2-FC61-4D16-BE91-55EB9463316E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D325491A-0CCF-4697-B6BB-C2BA51D8DAF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D325491A-0CCF-4697-B6BB-C2BA51D8DAF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D325491A-0CCF-4697-B6BB-C2BA51D8DAF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D325491A-0CCF-4697-B6BB-C2BA51D8DAF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C5A8BA-6B1B-4EDD-801F-23E15B4557BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C5A8BA-6B1B-4EDD-801F-23E15B4557BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C5A8BA-6B1B-4EDD-801F-23E15B4557BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C5A8BA-6B1B-4EDD-801F-23E15B4557BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11F49DFB-01D2-48A6-9155-B2A9206BC0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F49DFB-01D2-48A6-9155-B2A9206BC0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F49DFB-01D2-48A6-9155-B2A9206BC0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F49DFB-01D2-48A6-9155-B2A9206BC0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A6E9BA0-5411-42F1-9871-149EB5891C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A6E9BA0-5411-42F1-9871-149EB5891C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A6E9BA0-5411-42F1-9871-149EB5891C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A6E9BA0-5411-42F1-9871-149EB5891C89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C010365C-1379-4D25-BF6B-4D8478B7F339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C010365C-1379-4D25-BF6B-4D8478B7F339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C010365C-1379-4D25-BF6B-4D8478B7F339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C010365C-1379-4D25-BF6B-4D8478B7F339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5EAF3A2-FC61-4D16-BE91-55EB9463316E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5EAF3A2-FC61-4D16-BE91-55EB9463316E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5EAF3A2-FC61-4D16-BE91-55EB9463316E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5EAF3A2-FC61-4D16-BE91-55EB9463316E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

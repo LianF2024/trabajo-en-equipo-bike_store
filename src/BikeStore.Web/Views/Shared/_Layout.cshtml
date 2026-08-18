@@ -1,0 +1,93 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BikeStore</title>
+    <link rel="icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" asp-controller="Home" asp-action="Index">
+                <div class="brand-icon"><i class="bi bi-bicycle"></i></div>
+                <div>
+                    <h1>BikeStore</h1>
+                    <span>Tu pasión, nuestro camino</span>
+                </div>
+            </a>
+
+            <nav class="sidebar-menu">
+                <a class="menu-item @(currentController == "Home" ? "active" : null)" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill"></i><span>Dashboard</span>
+                </a>
+                <a class="menu-item @(currentController == "Categorias" ? "active" : null)" asp-controller="Categorias" asp-action="Index">
+                    <i class="bi bi-grid"></i><span>Categorías</span>
+                </a>
+                <a class="menu-item @(currentController == "Bicicletas" ? "active" : null)" asp-controller="Bicicletas" asp-action="Index">
+                    <i class="bi bi-bicycle"></i><span>Bicicletas</span>
+                </a>
+                <a class="menu-item @(currentController == "Clientes" ? "active" : null)" asp-controller="Clientes" asp-action="Index">
+                    <i class="bi bi-people"></i><span>Clientes</span>
+                </a>
+                <a class="menu-item @(currentController == "Ventas" ? "active" : null)" asp-controller="Ventas" asp-action="Index">
+                    <i class="bi bi-cart3"></i><span>Ventas</span>
+                </a>
+                <a class="menu-item" asp-controller="Bicicletas" asp-action="Index" asp-route-stockBajo="true">
+                    <i class="bi bi-box-seam"></i><span>Inventario</span>
+                </a>
+            </nav>
+
+            <button class="collapse-menu" type="button" id="collapse-menu">
+                <i class="bi bi-arrow-left"></i><span>Colapsar menú</span>
+            </button>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" type="button" id="menu-toggle" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <form class="global-search" asp-controller="Bicicletas" asp-action="Index" method="get">
+                        <i class="bi bi-search"></i>
+                        <input name="nombre" type="search" placeholder="Buscar por marca o modelo..." />
+                    </form>
+                </div>
+
+                <div class="topbar-right">
+                    <a class="notification-button" asp-controller="Bicicletas" asp-action="Index" asp-route-stockBajo="true" aria-label="Revisar stock bajo">
+                        <i class="bi bi-bell"></i>
+                    </a>
+                    <div class="user-info">
+                        <div class="avatar">A</div>
+                        <div class="user-text"><strong>Administrador</strong><span>BikeStore</span></div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content">
+                @if (TempData["Success"] is string success)
+                {
+                    <div class="alert success">@success</div>
+                }
+                @if (TempData["Error"] is string error)
+                {
+                    <div class="alert error">@error</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

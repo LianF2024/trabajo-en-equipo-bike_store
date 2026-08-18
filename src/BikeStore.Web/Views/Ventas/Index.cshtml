@@ -1,0 +1,8 @@
+@model IReadOnlyList<VentaVm>
+@{ ViewData["Title"] = "Historial de ventas"; }
+<div class="page-head"><div><span class="eyebrow">OPERACIONES</span><h1>Historial de ventas</h1><p>Consulte ventas generales o por cliente.</p></div><a class="button primary" asp-action="Crear">+ Registrar venta</a></div>
+<form method="get" class="filters"><label>Cliente<select name="clienteId" asp-items="ViewBag.ClienteId"><option value="">Todos</option></select></label><label>Desde<input type="date" name="desde" value="@ViewBag.Desde"/></label><label>Hasta<input type="date" name="hasta" value="@ViewBag.Hasta"/></label><button class="button dark">Filtrar</button><a class="button ghost" asp-action="Index">Limpiar</a></form>
+<div class="table-card"><table><thead><tr><th>Venta</th><th>Fecha</th><th>Cliente</th><th class="number">Subtotal</th><th class="number">IVA</th><th class="number">Total</th><th></th></tr></thead><tbody>
+@foreach (var item in Model) { <tr><td class="strong">#@item.Id</td><td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td><td>@item.Customer</td><td class="number">@item.Subtotal.ToString("C2")</td><td class="number">@item.Vat.ToString("C2")</td><td class="number strong">@item.Total.ToString("C2")</td><td><a asp-action="Detalle" asp-route-id="@item.Id">Ver detalle →</a></td></tr> }
+@if(!Model.Any()){<tr><td colspan="7" class="empty">No existen ventas para el filtro seleccionado.</td></tr>}
+</tbody></table></div>

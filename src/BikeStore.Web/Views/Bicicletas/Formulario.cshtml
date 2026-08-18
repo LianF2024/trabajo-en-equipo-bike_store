@@ -1,0 +1,71 @@
+@model BicicletaFormVm
+@{
+    var editing = Model.Id > 0;
+    var formAction = editing ? "Editar" : "Crear";
+    ViewData["Title"] = editing ? "Editar bicicleta" : "Nueva bicicleta";
+}
+
+<div class="form-shell">
+    <a class="back" asp-action="Index">← Volver al inventario</a>
+
+    <div class="form-card large">
+        <span class="eyebrow">@(editing ? "SERVICIO PUT" : "SERVICIO POST")</span>
+        <h1>@ViewData["Title"]</h1>
+        <p>La Web enviará estos datos a la API REST.</p>
+
+        <form asp-controller="Bicicletas"
+              asp-action="@formAction"
+              method="post"
+              enctype="application/x-www-form-urlencoded">
+            <input asp-for="Id" name="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+            <div class="grid-2">
+                <div>
+                    <label asp-for="CategoryId"></label>
+                    <select asp-for="CategoryId" name="CategoryId" asp-items="ViewBag.Categorias" required>
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <span asp-validation-for="CategoryId"></span>
+                </div>
+                <div>
+                    <label asp-for="Brand"></label>
+                    <input asp-for="Brand" name="Brand" minlength="2" maxlength="100" required />
+                    <span asp-validation-for="Brand"></span>
+                </div>
+                <div>
+                    <label asp-for="Model"></label>
+                    <input asp-for="Model" name="Model" minlength="1" maxlength="100" required />
+                    <span asp-validation-for="Model"></span>
+                </div>
+                <div>
+                    <label asp-for="Price"></label>
+                    <input asp-for="Price"
+                           name="Price"
+                           type="text"
+                           inputmode="decimal"
+                           required
+                           placeholder="Ej. 125,50" />
+                    <span asp-validation-for="Price"></span>
+                </div>
+                <div>
+                    <label asp-for="Stock"></label>
+                    <input asp-for="Stock" name="Stock" min="0" max="100000" required />
+                    <span asp-validation-for="Stock"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button primary">
+                    @(editing ? "Actualizar mediante PUT" : "Registrar mediante POST")
+                </button>
+                <a class="button ghost" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

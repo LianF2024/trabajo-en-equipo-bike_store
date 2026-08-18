@@ -1,0 +1,98 @@
+@model VentaFormVm
+@{
+    ViewData["Title"] = "Registrar venta";
+    var bikes = (IReadOnlyList<BicicletaVm>)ViewBag.Bicicletas;
+}
+
+<div class="form-shell sale-shell">
+    <a class="back" asp-action="Index">← Volver al historial</a>
+    <div class="form-card large">
+        <span class="eyebrow">VENTA TRANSACCIONAL</span>
+        <h1>Registrar venta</h1>
+        <p>La API calculará los valores y descontará el inventario automáticamente.</p>
+
+        <form asp-controller="Ventas"
+              asp-action="Crear"
+              method="post"
+              enctype="application/x-www-form-urlencoded"
+              id="sale-form">
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+            <label asp-for="CustomerId"></label>
+            <select asp-for="CustomerId" name="CustomerId" asp-items="ViewBag.Clientes">
+                <option value="">Seleccione un cliente...</option>
+            </select>
+            <span asp-validation-for="CustomerId"></span>
+
+            <div class="line-title">
+                <h2>Productos</h2>
+                <button type="button" class="button ghost small" id="add-line">+ Agregar línea</button>
+            </div>
+
+            <div id="sale-lines">
+                @for (var i = 0; i < Model.Items.Count; i++)
+                {
+                    <div class="sale-line">
+                        <label>
+                            Bicicleta
+                            <select name="Items[@i].BicycleId" required>
+                                <option value="">Seleccione...</option>
+                                @foreach (var bike in bikes)
+                                {
+                                    if (bike.Id == Model.Items[i].BicycleId)
+                                    {
+                                        <option value="@bike.Id" selected>@bike.DisplayName · Stock @bike.Stock · @bike.Price.ToString("C2")</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@bike.Id">@bike.DisplayName · Stock @bike.Stock · @bike.Price.ToString("C2")</option>
+                                    }
+                                }
+                            </select>
+                        </label>
+                        <label>
+                            Cantidad
+                            <input name="Items[@i].Quantity" type="number" min="1" value="@Model.Items[i].Quantity" required />
+                        </label>
+                        <button type="button" class="remove-line" aria-label="Quitar línea">×</button>
+                    </div>
+                }
+            </div>
+
+            <div class="sale-note">
+                <strong>Operación segura</strong>
+                <span>Si una bicicleta no tiene stock, la venta completa se cancela y no se descuenta ningún producto.</span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button primary">Confirmar venta mediante POST</button>
+                <a class="button ghost" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="line-template">
+    <div class="sale-line">
+        <label>
+            Bicicleta
+            <select required>
+                <option value="">Seleccione...</option>
+                @foreach (var bike in bikes)
+                {
+                    <option value="@bike.Id">@bike.DisplayName · Stock @bike.Stock · @bike.Price.ToString("C2")</option>
+                }
+            </select>
+        </label>
+        <label>
+            Cantidad
+            <input type="number" min="1" value="1" required />
+        </label>
+        <button type="button" class="remove-line" aria-label="Quitar línea">×</button>
+    </div>
+</template>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/sales.js" asp-append-version="true"></script>
+}

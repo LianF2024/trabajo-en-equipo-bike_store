@@ -1,0 +1,67 @@
+@model IReadOnlyList<BicicletaVm>
+@{
+    ViewData["Title"] = "Bicicletas";
+    var low = ViewBag.StockBajo is true;
+    var outOfStock = ViewBag.Agotadas is true;
+}
+
+<div class="page-head">
+    <div><span class="eyebrow">INVENTARIO</span><h1>Bicicletas</h1><p>Controle categoría, precio, stock y disponibilidad.</p></div>
+    <a class="button primary" asp-action="Crear"><i class="bi bi-plus-lg"></i>Nueva bicicleta</a>
+</div>
+
+<form method="get" class="filters wide">
+    <label>Marca o modelo<input name="nombre" value="@ViewBag.Nombre" placeholder="Buscar..." /></label>
+    <label>Categoría<select name="categoriaId" asp-items="ViewBag.Categorias"><option value="">Todas</option></select></label>
+    <label>Marca<input name="marca" value="@ViewBag.Marca" /></label>
+    <label class="check">
+        @if (low) { <input type="checkbox" name="stockBajo" value="true" checked /> }
+        else { <input type="checkbox" name="stockBajo" value="true" /> }
+        Stock bajo
+    </label>
+    <label class="check">
+        @if (outOfStock) { <input type="checkbox" name="agotadas" value="true" checked /> }
+        else { <input type="checkbox" name="agotadas" value="true" /> }
+        Agotadas
+    </label>
+    <button type="submit" class="button dark">Filtrar</button>
+    <a class="button ghost" asp-action="Index">Limpiar</a>
+</form>
+
+<div class="table-card">
+    <table>
+        <thead><tr><th>Marca / Modelo</th><th>Categoría</th><th class="number">Precio</th><th class="number">Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="strong">@item.Brand · @item.Model</td>
+                <td>@item.Category</td>
+                <td class="number">@item.Price.ToString("C2")</td>
+                <td class="number strong">@item.Stock</td>
+                <td><span class="status @StatusClass(item.Status)">@item.Status</span></td>
+                <td class="actions">
+                    <a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
+                    <form asp-action="Eliminar" asp-route-id="@item.Id" method="post" data-confirm="¿Eliminar esta bicicleta mediante DELETE?">
+                        <button type="submit" class="link danger"><i class="bi bi-trash"></i> Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="6" class="empty">No se encontraron bicicletas.</td></tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@functions {
+    string StatusClass(string status) => status switch
+    {
+        "Disponible" => "ok",
+        "Bajo stock" => "warn",
+        "Agotado" => "bad",
+        _ => "off"
+    };
+}

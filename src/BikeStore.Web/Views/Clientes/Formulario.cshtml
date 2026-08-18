@@ -1,0 +1,59 @@
+@model ClienteFormVm
+@{
+    var editing = Model.Id > 0;
+    var formAction = editing ? "Editar" : "Crear";
+    ViewData["Title"] = editing ? "Editar cliente" : "Nuevo cliente";
+}
+
+<div class="form-shell">
+    <a class="back" asp-action="Index">← Volver a clientes</a>
+    <div class="form-card large">
+        <span class="eyebrow">CLIENTE</span>
+        <h1>@ViewData["Title"]</h1>
+
+        <form asp-controller="Clientes"
+              asp-action="@formAction"
+              method="post"
+              enctype="application/x-www-form-urlencoded">
+            <input asp-for="Id" name="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+            <div class="grid-2">
+                <div>
+                    <label asp-for="Identification"></label>
+                    <input asp-for="Identification" name="Identification" minlength="10" maxlength="13" inputmode="numeric" required />
+                    <span asp-validation-for="Identification"></span>
+                </div>
+                <div>
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" name="Phone" maxlength="20" />
+                    <span asp-validation-for="Phone"></span>
+                </div>
+                <div>
+                    <label asp-for="FirstNames"></label>
+                    <input asp-for="FirstNames" name="FirstNames" minlength="2" maxlength="100" required />
+                    <span asp-validation-for="FirstNames"></span>
+                </div>
+                <div>
+                    <label asp-for="LastNames"></label>
+                    <input asp-for="LastNames" name="LastNames" minlength="2" maxlength="100" required />
+                    <span asp-validation-for="LastNames"></span>
+                </div>
+                <div class="span-2">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" name="Email" maxlength="150" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button primary">Guardar cliente</button>
+                <a class="button ghost" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

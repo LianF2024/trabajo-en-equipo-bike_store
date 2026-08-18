@@ -1,0 +1,84 @@
+@model DashboardVm
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@if (ViewBag.ApiError is string apiError)
+{
+    <div class="alert error"><strong>API no disponible:</strong> @apiError. Inicie BikeStore.Api y revise la configuración.</div>
+}
+
+<section class="summary-grid">
+    <article class="summary-card">
+        <div class="summary-icon blue"><i class="bi bi-bicycle"></i></div>
+        <div class="summary-info">
+            <span class="summary-title">Bicicletas</span>
+            <strong>@Model.Bicycles</strong>
+            <small>Total registradas</small>
+            <a class="summary-link blue-link" asp-controller="Bicicletas" asp-action="Index">Ver catálogo</a>
+        </div>
+    </article>
+
+    <article class="summary-card">
+        <div class="summary-icon green"><i class="bi bi-people-fill"></i></div>
+        <div class="summary-info">
+            <span class="summary-title">Clientes</span>
+            <strong>@Model.Customers</strong>
+            <small>Total registrados</small>
+            <a class="summary-link green-link" asp-controller="Clientes" asp-action="Index">Ver clientes</a>
+        </div>
+    </article>
+
+    <article class="summary-card">
+        <div class="summary-icon orange"><i class="bi bi-cart3"></i></div>
+        <div class="summary-info">
+            <span class="summary-title">Ventas del día</span>
+            <strong>@Model.TodayRevenue.ToString("C2")</strong>
+            <small>@Model.TodaySales venta(s) realizada(s)</small>
+            <a class="summary-link orange-link" asp-controller="Ventas" asp-action="Index">Ver historial</a>
+        </div>
+    </article>
+
+    <article class="summary-card">
+        <div class="summary-icon red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <div class="summary-info">
+            <span class="summary-title">Stock bajo</span>
+            <strong>@Model.LowStock</strong>
+            <small>Productos por revisar</small>
+            <a class="summary-link" asp-controller="Bicicletas" asp-action="Index" asp-route-stockBajo="true">Ver detalles</a>
+        </div>
+    </article>
+
+    <article class="quick-actions">
+        <a class="quick-button primary-action" asp-controller="Ventas" asp-action="Crear"><i class="bi bi-plus-lg"></i>Nueva venta</a>
+        <a class="quick-button" asp-controller="Bicicletas" asp-action="Crear"><i class="bi bi-bicycle"></i>Nueva bicicleta</a>
+        <a class="quick-button" asp-controller="Clientes" asp-action="Crear"><i class="bi bi-person-plus"></i>Nuevo cliente</a>
+    </article>
+</section>
+
+<section class="section-head dashboard-section">
+    <div><span class="eyebrow">ACTIVIDAD</span><h2>Ventas recientes</h2></div>
+    <a class="text-link" asp-controller="Ventas" asp-action="Index">Ver historial →</a>
+</section>
+
+<div class="table-card">
+    <table>
+        <thead><tr><th>Venta</th><th>Fecha</th><th>Cliente</th><th>Artículos</th><th class="number">Total</th></tr></thead>
+        <tbody>
+        @if (!Model.RecentSales.Any())
+        {
+            <tr><td colspan="5" class="empty">Todavía no existen ventas registradas.</td></tr>
+        }
+        @foreach (var item in Model.RecentSales)
+        {
+            <tr>
+                <td><a asp-controller="Ventas" asp-action="Detalle" asp-route-id="@item.Id">#@item.Id</a></td>
+                <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Customer</td>
+                <td>@item.Details.Sum(x => x.Quantity)</td>
+                <td class="number strong">@item.Total.ToString("C2")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,44 @@
+@model CategoriaFormVm
+@{
+    var editing = Model.Id > 0;
+    var formAction = editing ? "Editar" : "Crear";
+    ViewData["Title"] = editing ? "Editar categoría" : "Nueva categoría";
+}
+
+<div class="form-shell">
+    <a class="back" asp-action="Index">← Volver a categorías</a>
+    <div class="form-card">
+        <span class="eyebrow">@(editing ? "ACTUALIZACIÓN" : "NUEVO REGISTRO")</span>
+        <h1>@ViewData["Title"]</h1>
+        <p>Complete los datos obligatorios.</p>
+
+        <form asp-controller="Categorias"
+              asp-action="@formAction"
+              method="post"
+              enctype="application/x-www-form-urlencoded">
+            <input asp-for="Id" name="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+            <label asp-for="Name"></label>
+            <input asp-for="Name" name="Name" minlength="2" maxlength="100" autofocus required />
+            <span asp-validation-for="Name"></span>
+
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" name="Description" maxlength="250" rows="4"></textarea>
+            <span asp-validation-for="Description"></span>
+
+            <label class="check">
+                <input asp-for="Active" name="Active" /> Categoría activa
+            </label>
+
+            <div class="form-actions">
+                <button type="submit" class="button primary">Guardar cambios</button>
+                <a class="button ghost" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

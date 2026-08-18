@@ -1,0 +1,13 @@
+@{ ViewData["Title"] = "Error"; }
+<div class="form-shell">
+    <div class="form-card">
+        <span class="eyebrow">ERROR CONTROLADO</span>
+        <h1>No fue posible mostrar la página.</h1>
+        @if (ViewBag.ErrorMessage is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert error">@errorMessage</div>
+        }
+        <p>Regrese al panel e intente nuevamente. Si el problema continúa, revise que la API esté iniciada.</p>
+        <a class="button primary" asp-action="Index">Volver al panel</a>
+    </div>
+</div>

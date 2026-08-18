@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/BikeStore.Domain/BikeStore.Domain.csproj" />
+  <Project Path="src/BikeStore.Application/BikeStore.Application.csproj" />
+  <Project Path="src/BikeStore.Infrastructure/BikeStore.Infrastructure.csproj" />
+  <Project Path="src/BikeStore.Api/BikeStore.Api.csproj" />
+  <Project Path="src/BikeStore.Web/BikeStore.Web.csproj" />
+  <Project Path="tests/BikeStore.Application.Tests/BikeStore.Application.Tests.csproj" />
+</Solution>

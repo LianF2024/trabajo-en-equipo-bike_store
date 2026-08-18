@@ -14,3 +14,6 @@ Archivo principal: BikeStore.Api/Controllers/CategoriasController.cs.
 ## 4. Interfaz web
 Archivos principales: BikeStore.Web/Controllers/CategoriasController.cs, Views/Categorias/Index.cshtml y Formulario.cshtml.
 
+## 5. Validaciones
+Revisar creación, edición, eliminación, nombres duplicados y mensajes de error controlados.
+

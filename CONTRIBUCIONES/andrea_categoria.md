@@ -11,3 +11,6 @@ Archivos principales: ICategoryService.cs y CategoryService.cs.
 ## 3. API
 Archivo principal: BikeStore.Api/Controllers/CategoriasController.cs.
 
+## 4. Interfaz web
+Archivos principales: BikeStore.Web/Controllers/CategoriasController.cs, Views/Categorias/Index.cshtml y Formulario.cshtml.
+

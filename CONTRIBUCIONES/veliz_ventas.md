@@ -8,3 +8,6 @@ Archivos principales: Sale.cs, SaleDetail.cs y SaleDtos.cs.
 ## 2. Servicio
 Archivos principales: ISaleService.cs y SaleService.cs.
 
+## 3. API
+Archivo principal: BikeStore.Api/Controllers/VentasController.cs.
+

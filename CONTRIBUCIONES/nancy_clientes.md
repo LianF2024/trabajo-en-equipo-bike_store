@@ -11,3 +11,6 @@ Archivos principales: ICustomerService.cs y CustomerService.cs.
 ## 3. API
 Archivo principal: BikeStore.Api/Controllers/ClientesController.cs.
 
+## 4. Interfaz web
+Archivos principales: BikeStore.Web/Controllers/ClientesController.cs, Views/Clientes/Index.cshtml y Formulario.cshtml.
+

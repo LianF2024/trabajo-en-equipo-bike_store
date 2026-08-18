@@ -14,3 +14,6 @@ Archivos principales: controladores BicicletasController.cs y Views/Bicicletas/I
 ## 4. Dashboard
 Archivos principales: BikeStore.Web/Controllers/HomeController.cs y Views/Home/Index.cshtml.
 
+## 5. Validación
+Comprobar indicadores, navegación, altas, ediciones, listados y visualización coherente de bicicletas.
+

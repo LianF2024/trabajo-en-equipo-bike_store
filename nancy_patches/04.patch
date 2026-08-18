@@ -1,0 +1,69 @@
+diff --git a/src/BikeStore.Web/Controllers/ClientesController.cs b/src/BikeStore.Web/Controllers/ClientesController.cs
+index 12b6739..c7dcab4 100644
+--- a/src/BikeStore.Web/Controllers/ClientesController.cs
++++ b/src/BikeStore.Web/Controllers/ClientesController.cs
+@@ -9,9 +9,20 @@ public sealed class ClientesController(IBikeStoreApiClient api) : Controller
+ {
+     public async Task<IActionResult> Index(string? cedula, string? apellido, CancellationToken cancellationToken)
+     {
++        cedula = string.IsNullOrWhiteSpace(cedula) ? null : cedula.Trim();
++        apellido = string.IsNullOrWhiteSpace(apellido) ? null : apellido.Trim();
+         ViewBag.Cedula = cedula;
+         ViewBag.Apellido = apellido;
+-        return View(await api.GetCustomersAsync(cedula, apellido, cancellationToken));
++
++        try
++        {
++            return View(await api.GetCustomersAsync(cedula, apellido, cancellationToken));
++        }
++        catch (ApiException ex)
++        {
++            TempData["Error"] = $"No se pudo consultar los clientes: {ex.Message}";
++            return View(Array.Empty<ClienteVm>());
++        }
+     }
+ 
+     public IActionResult Crear() => View("Formulario", new ClienteFormVm());
+@@ -37,16 +48,24 @@ public sealed class ClientesController(IBikeStoreApiClient api) : Controller
+ 
+     public async Task<IActionResult> Editar(int id, CancellationToken cancellationToken)
+     {
+-        var item = await api.GetCustomerAsync(id, cancellationToken);
+-        return View("Formulario", new ClienteFormVm
++        try
++        {
++            var item = await api.GetCustomerAsync(id, cancellationToken);
++            return View("Formulario", new ClienteFormVm
++            {
++                Id = item.Id,
++                Identification = item.Identification,
++                FirstNames = item.FirstNames,
++                LastNames = item.LastNames,
++                Phone = item.Phone,
++                Email = item.Email
++            });
++        }
++        catch (ApiException ex)
+         {
+-            Id = item.Id,
+-            Identification = item.Identification,
+-            FirstNames = item.FirstNames,
+-            LastNames = item.LastNames,
+-            Phone = item.Phone,
+-            Email = item.Email
+-        });
++            TempData["Error"] = $"No se pudo cargar el cliente: {ex.Message}";
++            return RedirectToAction(nameof(Index));
++        }
+     }
+ 
+     [HttpPost, ActionName("Editar"), ValidateAntiForgeryToken]
+@@ -78,7 +97,7 @@ public sealed class ClientesController(IBikeStoreApiClient api) : Controller
+         }
+         catch (ApiException ex)
+         {
+-            TempData["Error"] = ex.Message;
++            TempData["Error"] = $"No se pudo eliminar el cliente #{id}: {ex.Message}";
+         }
+         return RedirectToAction(nameof(Index));
+     }

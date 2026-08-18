@@ -10,7 +10,7 @@ public sealed record CustomerDto(
     string? Phone,
     string? Email)
 {
-    public string FullName => $"{FirstNames} {LastNames}";
+    public string FullName => string.Join(" ", new[] { FirstNames, LastNames }.Where(value => !string.IsNullOrWhiteSpace(value)));
 }
 
 public sealed class SaveCustomerRequest
@@ -21,10 +21,12 @@ public sealed class SaveCustomerRequest
 
     [Required(ErrorMessage = "Los nombres son obligatorios.")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "Los nombres deben tener entre 2 y 100 caracteres.")]
+    [RegularExpression(@"^[\p{L}\p{M} .'-]+$", ErrorMessage = "Los nombres contienen caracteres no válidos.")]
     public string FirstNames { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Los apellidos son obligatorios.")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "Los apellidos deben tener entre 2 y 100 caracteres.")]
+    [RegularExpression(@"^[\p{L}\p{M} .'-]+$", ErrorMessage = "Los apellidos contienen caracteres no válidos.")]
     public string LastNames { get; set; } = string.Empty;
 
     [Phone(ErrorMessage = "Ingrese un teléfono válido.")]

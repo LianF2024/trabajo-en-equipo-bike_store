@@ -11,3 +11,6 @@ Archivos principales: IBicycleService.cs y BicycleService.cs.
 ## 3. API e interfaz
 Archivos principales: controladores BicicletasController.cs y Views/Bicicletas/Index.cshtml / Formulario.cshtml.
 
+## 4. Dashboard
+Archivos principales: BikeStore.Web/Controllers/HomeController.cs y Views/Home/Index.cshtml.
+

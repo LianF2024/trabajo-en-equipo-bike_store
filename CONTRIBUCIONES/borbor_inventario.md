@@ -8,3 +8,8 @@ Responsable del control de existencias de bicicletas, estados y disponibilidad. 
 ## 2. Control de stock
 El inventario se apoya en la información de bicicletas y sus estados. Se debe verificar disponibilidad, stock bajo/agotado y consistencia antes de registrar ventas.
 
+## 3. Validación
+- Revisar altas y ediciones de bicicletas.
+- Verificar cambios de disponibilidad.
+- Confirmar que las ventas no dejen stock inconsistente.
+

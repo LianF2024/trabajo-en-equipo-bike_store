@@ -14,3 +14,6 @@ Archivo principal: BikeStore.Api/Controllers/VentasController.cs.
 ## 4. Interfaz web
 Archivos principales: BikeStore.Web/Controllers/VentasController.cs, Views/Ventas/Crear.cshtml, Detalle.cshtml, Index.cshtml y wwwroot/js/sales.js.
 
+## 5. Validaciones
+Revisar creación de ventas, detalle, cálculo, disponibilidad de bicicletas y actualización coherente del stock.
+

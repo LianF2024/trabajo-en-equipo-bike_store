@@ -21,27 +21,27 @@
             <div class="grid-2">
                 <div>
                     <label asp-for="Identification"></label>
-                    <input asp-for="Identification" name="Identification" minlength="10" maxlength="13" inputmode="numeric" required />
+                    <input asp-for="Identification" name="Identification" minlength="10" maxlength="13" inputmode="numeric" pattern="[0-9]{10,13}" autocomplete="off" required />
                     <span asp-validation-for="Identification"></span>
                 </div>
                 <div>
                     <label asp-for="Phone"></label>
-                    <input asp-for="Phone" name="Phone" maxlength="20" />
+                    <input asp-for="Phone" name="Phone" maxlength="20" inputmode="tel" autocomplete="tel" />
                     <span asp-validation-for="Phone"></span>
                 </div>
                 <div>
                     <label asp-for="FirstNames"></label>
-                    <input asp-for="FirstNames" name="FirstNames" minlength="2" maxlength="100" required />
+                    <input asp-for="FirstNames" name="FirstNames" minlength="2" maxlength="100" autocomplete="given-name" required />
                     <span asp-validation-for="FirstNames"></span>
                 </div>
                 <div>
                     <label asp-for="LastNames"></label>
-                    <input asp-for="LastNames" name="LastNames" minlength="2" maxlength="100" required />
+                    <input asp-for="LastNames" name="LastNames" minlength="2" maxlength="100" autocomplete="family-name" required />
                     <span asp-validation-for="LastNames"></span>
                 </div>
                 <div class="span-2">
                     <label asp-for="Email"></label>
-                    <input asp-for="Email" name="Email" maxlength="150" />
+                    <input asp-for="Email" name="Email" type="email" maxlength="150" autocomplete="email" />
                     <span asp-validation-for="Email"></span>
                 </div>
             </div>

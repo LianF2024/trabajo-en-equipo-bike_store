@@ -14,3 +14,6 @@ Archivo principal: BikeStore.Api/Controllers/ClientesController.cs.
 ## 4. Interfaz web
 Archivos principales: BikeStore.Web/Controllers/ClientesController.cs, Views/Clientes/Index.cshtml y Formulario.cshtml.
 
+## 5. Validaciones
+Revisar creación, edición, consulta, duplicados, datos obligatorios y mensajes de error.
+

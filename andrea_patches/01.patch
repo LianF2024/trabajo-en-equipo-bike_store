@@ -1,0 +1,24 @@
+diff --git a/src/BikeStore.Application/DTOs/CategoryDtos.cs b/src/BikeStore.Application/DTOs/CategoryDtos.cs
+index 34ac455..02da1f5 100644
+--- a/src/BikeStore.Application/DTOs/CategoryDtos.cs
++++ b/src/BikeStore.Application/DTOs/CategoryDtos.cs
+@@ -8,6 +8,7 @@ public sealed class SaveCategoryRequest
+ {
+     [Required(ErrorMessage = "El nombre de la categoría es obligatorio.")]
+     [StringLength(100, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 100 caracteres.")]
++    [RegularExpression(@"^[\p{L}\p{N}][\p{L}\p{N} .,&()'/-]*$", ErrorMessage = "El nombre contiene caracteres no permitidos.")]
+     public string Name { get; set; } = string.Empty;
+ 
+     [StringLength(250, ErrorMessage = "La descripción no puede superar los 250 caracteres.")]
+diff --git a/src/BikeStore.Web/Models/ApiModels.cs b/src/BikeStore.Web/Models/ApiModels.cs
+index 41b9eb7..6242b35 100644
+--- a/src/BikeStore.Web/Models/ApiModels.cs
++++ b/src/BikeStore.Web/Models/ApiModels.cs
+@@ -9,6 +9,7 @@ public sealed class CategoriaFormVm
+     public int Id { get; set; }
+     [Required(ErrorMessage = "El nombre de la categoría es obligatorio.")]
+     [StringLength(100, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 100 caracteres.")]
++    [RegularExpression(@"^[\p{L}\p{N}][\p{L}\p{N} .,&()'/-]*$", ErrorMessage = "El nombre contiene caracteres no permitidos.")]
+     [Display(Name = "Nombre")]
+     public string Name { get; set; } = string.Empty;
+     [StringLength(250, ErrorMessage = "La descripción no puede superar los 250 caracteres."), Display(Name = "Descripción")]

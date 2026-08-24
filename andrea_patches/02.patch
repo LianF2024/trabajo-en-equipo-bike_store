@@ -1,0 +1,50 @@
+diff --git a/src/BikeStore.Application/Services/CategoryService.cs b/src/BikeStore.Application/Services/CategoryService.cs
+index e1c80da..cc85a4e 100644
+--- a/src/BikeStore.Application/Services/CategoryService.cs
++++ b/src/BikeStore.Application/Services/CategoryService.cs
+@@ -9,7 +9,12 @@ namespace BikeStore.Application.Services;
+ public sealed class CategoryService(IStoreRepository repository) : ICategoryService
+ {
+     public async Task<IReadOnlyList<CategoryDto>> GetAllAsync(string? search, bool includeInactive, CancellationToken cancellationToken)
+-        => (await repository.GetCategoriesAsync(search, includeInactive, cancellationToken)).Select(Map).ToList();
++    {
++        var normalizedSearch = Clean(search);
++        return (await repository.GetCategoriesAsync(normalizedSearch, includeInactive, cancellationToken))
++            .Select(Map)
++            .ToList();
++    }
+ 
+     public async Task<CategoryDto> GetByIdAsync(int id, CancellationToken cancellationToken)
+         => Map(await FindAsync(id, cancellationToken));
+@@ -17,7 +22,7 @@ public sealed class CategoryService(IStoreRepository repository) : ICategoryServ
+     public async Task<CategoryDto> CreateAsync(SaveCategoryRequest request, CancellationToken cancellationToken)
+     {
+         Validate(request);
+-        var name = request.Name.Trim();
++        var name = NormalizeName(request.Name);
+         if (await repository.CategoryNameExistsAsync(name, null, cancellationToken))
+             throw new ConflictException("Ya existe una categoría con ese nombre.");
+ 
+@@ -31,7 +36,7 @@ public sealed class CategoryService(IStoreRepository repository) : ICategoryServ
+     {
+         Validate(request);
+         var entity = await FindAsync(id, cancellationToken);
+-        var name = request.Name.Trim();
++        var name = NormalizeName(request.Name);
+         if (await repository.CategoryNameExistsAsync(name, id, cancellationToken))
+             throw new ConflictException("Ya existe una categoría con ese nombre.");
+ 
+@@ -53,7 +58,12 @@ public sealed class CategoryService(IStoreRepository repository) : ICategoryServ
+            ?? throw new NotFoundException("Categoría no encontrada.");
+ 
+     private static CategoryDto Map(Category category) => new(category.Id, category.Name, category.Description, category.Active);
+-    private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
++
++    private static string NormalizeName(string value)
++        => string.Join(' ', value.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries));
++
++    private static string? Clean(string? value)
++        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+ 
+     private static void Validate(SaveCategoryRequest request)
+     {

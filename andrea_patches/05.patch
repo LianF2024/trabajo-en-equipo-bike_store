@@ -1,0 +1,106 @@
+diff --git a/src/BikeStore.Web/Views/Categorias/Formulario.cshtml b/src/BikeStore.Web/Views/Categorias/Formulario.cshtml
+index 30e6366..596f173 100644
+--- a/src/BikeStore.Web/Views/Categorias/Formulario.cshtml
++++ b/src/BikeStore.Web/Views/Categorias/Formulario.cshtml
+@@ -20,11 +20,13 @@
+             <div asp-validation-summary="ModelOnly" class="validation"></div>
+ 
+             <label asp-for="Name"></label>
+-            <input asp-for="Name" name="Name" minlength="2" maxlength="100" autofocus required />
++            <input asp-for="Name" name="Name" minlength="2" maxlength="100" autocomplete="off" autofocus required />
++            <small>Use un nombre claro y único para identificar la categoría.</small>
+             <span asp-validation-for="Name"></span>
+ 
+             <label asp-for="Description"></label>
+-            <textarea asp-for="Description" name="Description" maxlength="250" rows="4"></textarea>
++            <textarea asp-for="Description" name="Description" maxlength="250" rows="4" placeholder="Descripción opcional de la categoría"></textarea>
++            <small>Máximo 250 caracteres.</small>
+             <span asp-validation-for="Description"></span>
+ 
+             <label class="check">
+@@ -32,7 +34,7 @@
+             </label>
+ 
+             <div class="form-actions">
+-                <button type="submit" class="button primary">Guardar cambios</button>
++                <button type="submit" class="button primary">@(editing ? "Actualizar categoría" : "Crear categoría")</button>
+                 <a class="button ghost" asp-action="Index">Cancelar</a>
+             </div>
+         </form>
+diff --git a/src/BikeStore.Web/Views/Categorias/Index.cshtml b/src/BikeStore.Web/Views/Categorias/Index.cshtml
+index 7279e5c..26ef013 100644
+--- a/src/BikeStore.Web/Views/Categorias/Index.cshtml
++++ b/src/BikeStore.Web/Views/Categorias/Index.cshtml
+@@ -1,8 +1,65 @@
+ @model IReadOnlyList<CategoriaVm>
+-@{ ViewData["Title"] = "Categorías"; var includeInactive = ViewBag.IncluirInactivas is true; }
+-<div class="page-head"><div><span class="eyebrow">CATÁLOGO</span><h1>Categorías</h1><p>Organice los tipos de bicicletas de la tienda.</p></div><a class="button primary" asp-action="Crear">+ Nueva categoría</a></div>
+-<form method="get" class="filters"><label>Buscar<input name="buscar" value="@ViewBag.Buscar" placeholder="Nombre de categoría" /></label><label class="check">@if(includeInactive){<input type="checkbox" name="incluirInactivas" value="true" checked/>}else{<input type="checkbox" name="incluirInactivas" value="true"/>} Incluir inactivas</label><button class="button dark">Filtrar</button><a class="button ghost" asp-action="Index">Limpiar</a></form>
+-<div class="table-card"><table><thead><tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th></th></tr></thead><tbody>
+-@foreach (var item in Model) { <tr><td class="strong">@item.Name</td><td>@(item.Description ?? "—")</td><td><span class="status @(item.Active ? "ok" : "off")">@(item.Active ? "Activa" : "Inactiva")</span></td><td class="actions"><a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>@if(item.Active){<form asp-action="Eliminar" asp-route-id="@item.Id" method="post" data-confirm="¿Desactivar esta categoría?"><button type="submit" class="link danger"><i class="bi bi-trash"></i> Desactivar</button></form>}</td></tr> }
+-@if (!Model.Any()) { <tr><td colspan="4" class="empty">No se encontraron categorías.</td></tr> }
+-</tbody></table></div>
++@{
++    ViewData["Title"] = "Categorías";
++    var includeInactive = ViewBag.IncluirInactivas is true;
++    var activeCount = Model.Count(x => x.Active);
++}
++<div class="page-head">
++    <div>
++        <span class="eyebrow">CATÁLOGO</span>
++        <h1>Categorías</h1>
++        <p>Organice los tipos de bicicletas de la tienda. @activeCount categoría(s) activa(s).</p>
++    </div>
++    <a class="button primary" asp-action="Crear">+ Nueva categoría</a>
++</div>
++
++<form method="get" class="filters">
++    <label>
++        Buscar
++        <input name="buscar" value="@ViewBag.Buscar" placeholder="Nombre de categoría" autocomplete="off" />
++    </label>
++    <label class="check">
++        @if (includeInactive)
++        {
++            <input type="checkbox" name="incluirInactivas" value="true" checked />
++        }
++        else
++        {
++            <input type="checkbox" name="incluirInactivas" value="true" />
++        }
++        Incluir inactivas
++    </label>
++    <button class="button dark" type="submit">Filtrar</button>
++    <a class="button ghost" asp-action="Index">Limpiar</a>
++</form>
++
++<div class="table-card">
++    <table>
++        <thead>
++            <tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr>
++        </thead>
++        <tbody>
++        @foreach (var item in Model)
++        {
++            <tr>
++                <td class="strong">@item.Name</td>
++                <td>@(item.Description ?? "—")</td>
++                <td><span class="status @(item.Active ? "ok" : "off")">@(item.Active ? "Activa" : "Inactiva")</span></td>
++                <td class="actions">
++                    <a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
++                    @if (item.Active)
++                    {
++                        <form asp-action="Eliminar" asp-route-id="@item.Id" method="post" data-confirm="¿Desactivar la categoría '@item.Name'?">
++                            <button type="submit" class="link danger"><i class="bi bi-trash"></i> Desactivar</button>
++                        </form>
++                    }
++                </td>
++            </tr>
++        }
++        @if (!Model.Any())
++        {
++            <tr><td colspan="4" class="empty">No se encontraron categorías con los filtros seleccionados.</td></tr>
++        }
++        </tbody>
++    </table>
++</div>

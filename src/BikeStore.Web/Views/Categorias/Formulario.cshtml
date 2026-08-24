@@ -20,11 +20,13 @@
             <div asp-validation-summary="ModelOnly" class="validation"></div>
 
             <label asp-for="Name"></label>
-            <input asp-for="Name" name="Name" minlength="2" maxlength="100" autofocus required />
+            <input asp-for="Name" name="Name" minlength="2" maxlength="100" autocomplete="off" autofocus required />
+            <small>Use un nombre claro y único para identificar la categoría.</small>
             <span asp-validation-for="Name"></span>
 
             <label asp-for="Description"></label>
-            <textarea asp-for="Description" name="Description" maxlength="250" rows="4"></textarea>
+            <textarea asp-for="Description" name="Description" maxlength="250" rows="4" placeholder="Descripción opcional de la categoría"></textarea>
+            <small>Máximo 250 caracteres.</small>
             <span asp-validation-for="Description"></span>
 
             <label class="check">
@@ -32,7 +34,7 @@
             </label>
 
             <div class="form-actions">
-                <button type="submit" class="button primary">Guardar cambios</button>
+                <button type="submit" class="button primary">@(editing ? "Actualizar categoría" : "Crear categoría")</button>
                 <a class="button ghost" asp-action="Index">Cancelar</a>
             </div>
         </form>

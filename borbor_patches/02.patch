@@ -1,0 +1,64 @@
+diff --git a/src/BikeStore.Web/Controllers/BicicletasController.cs b/src/BikeStore.Web/Controllers/BicicletasController.cs
+index c94c5a4..6832aa9 100644
+--- a/src/BikeStore.Web/Controllers/BicicletasController.cs
++++ b/src/BikeStore.Web/Controllers/BicicletasController.cs
+@@ -8,14 +8,15 @@ namespace BikeStore.Web.Controllers;
+ 
+ public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
+ {
+-    public async Task<IActionResult> Index(string? nombre, int? categoriaId, string? marca, bool stockBajo, bool agotadas, CancellationToken cancellationToken)
++    public async Task<IActionResult> Index(string? nombre, int? categoriaId, string? marca, bool stockBajo, bool agotadas, int limiteStock = 5, CancellationToken cancellationToken = default)
+     {
+         await LoadCategoriesAsync(categoriaId, cancellationToken);
+         ViewBag.Nombre = nombre;
+         ViewBag.Marca = marca;
+         ViewBag.StockBajo = stockBajo;
+         ViewBag.Agotadas = agotadas;
+-        return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, cancellationToken));
++        ViewBag.LimiteStock = Math.Clamp(limiteStock, 1, 1000);
++        return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, ViewBag.LimiteStock, cancellationToken));
+     }
+ 
+     public async Task<IActionResult> Crear(CancellationToken cancellationToken)
+diff --git a/src/BikeStore.Web/Services/BikeStoreApiClient.cs b/src/BikeStore.Web/Services/BikeStoreApiClient.cs
+index e21b1a1..d47d6ce 100644
+--- a/src/BikeStore.Web/Services/BikeStoreApiClient.cs
++++ b/src/BikeStore.Web/Services/BikeStoreApiClient.cs
+@@ -16,8 +16,8 @@ public sealed class BikeStoreApiClient(HttpClient httpClient) : IBikeStoreApiCli
+     public Task UpdateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default) => SendAsync(HttpMethod.Put, $"api/categorias/{model.Id}", model, cancellationToken);
+     public Task DeleteCategoryAsync(int id, CancellationToken cancellationToken = default) => SendAsync(HttpMethod.Delete, $"api/categorias/{id}", null, cancellationToken);
+ 
+-    public Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, CancellationToken cancellationToken = default)
+-        => GetListAsync<BicicletaVm>($"api/bicicletas?name={Uri.EscapeDataString(name ?? string.Empty)}&categoryId={categoryId}&brand={Uri.EscapeDataString(brand ?? string.Empty)}&lowStock={lowStock}&outOfStock={outOfStock}", cancellationToken);
++    public Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, int lowStockThreshold = 5, CancellationToken cancellationToken = default)
++        => GetListAsync<BicicletaVm>($"api/bicicletas?name={Uri.EscapeDataString(name ?? string.Empty)}&categoryId={categoryId}&brand={Uri.EscapeDataString(brand ?? string.Empty)}&lowStock={lowStock}&outOfStock={outOfStock}&lowStockThreshold={lowStockThreshold}", cancellationToken);
+     public Task<BicicletaVm> GetBicycleAsync(int id, CancellationToken cancellationToken = default) => GetAsync<BicicletaVm>($"api/bicicletas/{id}", cancellationToken);
+     public Task<BicicletaVm> CreateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default)
+         => PostAsync<BicicletaVm>("api/bicicletas", model, "La API no devolvió la bicicleta registrada.", cancellationToken);
+diff --git a/src/BikeStore.Web/Services/IBikeStoreApiClient.cs b/src/BikeStore.Web/Services/IBikeStoreApiClient.cs
+index c636af2..9331c72 100644
+--- a/src/BikeStore.Web/Services/IBikeStoreApiClient.cs
++++ b/src/BikeStore.Web/Services/IBikeStoreApiClient.cs
+@@ -9,7 +9,7 @@ public interface IBikeStoreApiClient
+     Task<CategoriaVm> CreateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default);
+     Task UpdateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default);
+     Task DeleteCategoryAsync(int id, CancellationToken cancellationToken = default);
+-    Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, CancellationToken cancellationToken = default);
++    Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, int lowStockThreshold = 5, CancellationToken cancellationToken = default);
+     Task<BicicletaVm> GetBicycleAsync(int id, CancellationToken cancellationToken = default);
+     Task<BicicletaVm> CreateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default);
+     Task UpdateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default);
+diff --git a/src/BikeStore.Web/Views/Bicicletas/Index.cshtml b/src/BikeStore.Web/Views/Bicicletas/Index.cshtml
+index 6523f1b..ce1e388 100644
+--- a/src/BikeStore.Web/Views/Bicicletas/Index.cshtml
++++ b/src/BikeStore.Web/Views/Bicicletas/Index.cshtml
+@@ -19,6 +19,9 @@
+         else { <input type="checkbox" name="stockBajo" value="true" /> }
+         Stock bajo
+     </label>
++    <label>Límite stock bajo
++        <input type="number" name="limiteStock" value="@ViewBag.LimiteStock" min="1" max="1000" />
++    </label>
+     <label class="check">
+         @if (outOfStock) { <input type="checkbox" name="agotadas" value="true" checked /> }
+         else { <input type="checkbox" name="agotadas" value="true" /> }

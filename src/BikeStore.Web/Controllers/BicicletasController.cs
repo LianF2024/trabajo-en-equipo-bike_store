@@ -8,14 +8,15 @@ namespace BikeStore.Web.Controllers;
 
 public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
 {
-    public async Task<IActionResult> Index(string? nombre, int? categoriaId, string? marca, bool stockBajo, bool agotadas, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? nombre, int? categoriaId, string? marca, bool stockBajo, bool agotadas, int limiteStock = 5, CancellationToken cancellationToken = default)
     {
         await LoadCategoriesAsync(categoriaId, cancellationToken);
         ViewBag.Nombre = nombre;
         ViewBag.Marca = marca;
         ViewBag.StockBajo = stockBajo;
         ViewBag.Agotadas = agotadas;
-        return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, cancellationToken));
+        ViewBag.LimiteStock = Math.Clamp(limiteStock, 1, 1000);
+        return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, ViewBag.LimiteStock, cancellationToken));
     }
 
     public async Task<IActionResult> Crear(CancellationToken cancellationToken)

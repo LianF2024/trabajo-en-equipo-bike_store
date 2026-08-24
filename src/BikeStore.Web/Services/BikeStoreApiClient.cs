@@ -16,8 +16,8 @@ public sealed class BikeStoreApiClient(HttpClient httpClient) : IBikeStoreApiCli
     public Task UpdateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default) => SendAsync(HttpMethod.Put, $"api/categorias/{model.Id}", model, cancellationToken);
     public Task DeleteCategoryAsync(int id, CancellationToken cancellationToken = default) => SendAsync(HttpMethod.Delete, $"api/categorias/{id}", null, cancellationToken);
 
-    public Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, CancellationToken cancellationToken = default)
-        => GetListAsync<BicicletaVm>($"api/bicicletas?name={Uri.EscapeDataString(name ?? string.Empty)}&categoryId={categoryId}&brand={Uri.EscapeDataString(brand ?? string.Empty)}&lowStock={lowStock}&outOfStock={outOfStock}", cancellationToken);
+    public Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, int lowStockThreshold = 5, CancellationToken cancellationToken = default)
+        => GetListAsync<BicicletaVm>($"api/bicicletas?name={Uri.EscapeDataString(name ?? string.Empty)}&categoryId={categoryId}&brand={Uri.EscapeDataString(brand ?? string.Empty)}&lowStock={lowStock}&outOfStock={outOfStock}&lowStockThreshold={lowStockThreshold}", cancellationToken);
     public Task<BicicletaVm> GetBicycleAsync(int id, CancellationToken cancellationToken = default) => GetAsync<BicicletaVm>($"api/bicicletas/{id}", cancellationToken);
     public Task<BicicletaVm> CreateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default)
         => PostAsync<BicicletaVm>("api/bicicletas", model, "La API no devolvió la bicicleta registrada.", cancellationToken);

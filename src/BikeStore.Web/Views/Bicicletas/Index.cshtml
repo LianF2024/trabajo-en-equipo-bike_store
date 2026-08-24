@@ -19,6 +19,9 @@
         else { <input type="checkbox" name="stockBajo" value="true" /> }
         Stock bajo
     </label>
+    <label>Límite stock bajo
+        <input type="number" name="limiteStock" value="@ViewBag.LimiteStock" min="1" max="1000" />
+    </label>
     <label class="check">
         @if (outOfStock) { <input type="checkbox" name="agotadas" value="true" checked /> }
         else { <input type="checkbox" name="agotadas" value="true" /> }

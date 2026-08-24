@@ -16,6 +16,12 @@ public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
         ViewBag.StockBajo = stockBajo;
         ViewBag.Agotadas = agotadas;
         ViewBag.LimiteStock = Math.Clamp(limiteStock, 1, 1000);
+
+        var inventory = await api.GetBicyclesAsync(lowStockThreshold: ViewBag.LimiteStock, cancellationToken: cancellationToken);
+        ViewBag.TotalUnidades = inventory.Sum(x => x.Stock);
+        ViewBag.ProductosBajoStock = inventory.Count(x => x.Stock > 0 && x.Stock <= ViewBag.LimiteStock);
+        ViewBag.ProductosAgotados = inventory.Count(x => x.Stock == 0);
+
         return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, ViewBag.LimiteStock, cancellationToken));
     }
 

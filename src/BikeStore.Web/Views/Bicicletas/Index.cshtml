@@ -10,6 +10,24 @@
     <a class="button primary" asp-action="Crear"><i class="bi bi-plus-lg"></i>Nueva bicicleta</a>
 </div>
 
+<div class="dashboard-grid">
+    <article class="metric-card">
+        <span class="eyebrow">EXISTENCIAS</span>
+        <strong>@ViewBag.TotalUnidades</strong>
+        <small>unidades disponibles en inventario</small>
+    </article>
+    <article class="metric-card">
+        <span class="eyebrow">ALERTA</span>
+        <strong>@ViewBag.ProductosBajoStock</strong>
+        <small>productos con stock bajo</small>
+    </article>
+    <article class="metric-card">
+        <span class="eyebrow">AGOTADOS</span>
+        <strong>@ViewBag.ProductosAgotados</strong>
+        <small>productos sin existencias</small>
+    </article>
+</div>
+
 <form method="get" class="filters wide">
     <label>Marca o modelo<input name="nombre" value="@ViewBag.Nombre" placeholder="Buscar..." /></label>
     <label>Categoría<select name="categoriaId" asp-items="ViewBag.Categorias"><option value="">Todas</option></select></label>
@@ -41,7 +59,17 @@
                 <td class="strong">@item.Brand · @item.Model</td>
                 <td>@item.Category</td>
                 <td class="number">@item.Price.ToString("C2")</td>
-                <td class="number strong">@item.Stock</td>
+                <td class="number strong">
+                    @item.Stock
+                    @if (item.Stock == 0)
+                    {
+                        <small class="status bad">Sin existencias</small>
+                    }
+                    else if (item.Stock <= (int)ViewBag.LimiteStock)
+                    {
+                        <small class="status warn">Reabastecer</small>
+                    }
+                </td>
                 <td><span class="status @StatusClass(item.Status)">@item.Status</span></td>
                 <td class="actions">
                     <a asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>

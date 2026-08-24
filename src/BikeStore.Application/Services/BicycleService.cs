@@ -10,7 +10,10 @@ namespace BikeStore.Application.Services;
 public sealed class BicycleService(IStoreRepository repository, BusinessOptions options) : IBicycleService
 {
     public async Task<IReadOnlyList<BicycleDto>> GetAllAsync(BicycleFilter filter, CancellationToken cancellationToken)
-        => (await repository.GetBicyclesAsync(filter, cancellationToken)).Select(Map).ToList();
+    {
+        NormalizeInventoryFilter(filter);
+        return (await repository.GetBicyclesAsync(filter, cancellationToken)).Select(Map).ToList();
+    }
 
     public async Task<BicycleDto> GetByIdAsync(int id, CancellationToken cancellationToken)
         => Map(await FindAsync(id, cancellationToken));
@@ -48,6 +51,23 @@ public sealed class BicycleService(IStoreRepository repository, BusinessOptions 
         var category = await repository.GetCategoryAsync(id, cancellationToken);
         if (category is null || !category.Active) throw new BusinessException("La categoría seleccionada no existe o está inactiva.");
     }
+
+    private static void NormalizeInventoryFilter(BicycleFilter filter)
+    {
+        filter.Name = Clean(filter.Name);
+        filter.Category = Clean(filter.Category);
+        filter.Brand = Clean(filter.Brand);
+
+        if (filter.LowStockThreshold < 1 || filter.LowStockThreshold > 1000)
+            throw new BusinessException("El límite de stock bajo debe estar entre 1 y 1000.");
+
+        // Si se solicitan ambos estados, agotado tiene prioridad para evitar resultados ambiguos.
+        if (filter.OutOfStock)
+            filter.LowStock = false;
+    }
+
+    private static string? Clean(string? value)
+        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     private static void Validate(SaveBicycleRequest request)
     {

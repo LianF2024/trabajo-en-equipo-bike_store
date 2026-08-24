@@ -9,7 +9,7 @@ public interface IBikeStoreApiClient
     Task<CategoriaVm> CreateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default);
     Task UpdateCategoryAsync(CategoriaFormVm model, CancellationToken cancellationToken = default);
     Task DeleteCategoryAsync(int id, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<BicicletaVm>> GetBicyclesAsync(string? name = null, int? categoryId = null, string? brand = null, bool lowStock = false, bool outOfStock = false, int lowStockThreshold = 5, CancellationToken cancellationToken = default);
     Task<BicicletaVm> GetBicycleAsync(int id, CancellationToken cancellationToken = default);
     Task<BicicletaVm> CreateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default);
     Task UpdateBicycleAsync(BicicletaFormVm model, CancellationToken cancellationToken = default);

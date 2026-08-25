@@ -1,0 +1,45 @@
+diff --git a/src/BikeStore.Web/Views/Home/Index.cshtml b/src/BikeStore.Web/Views/Home/Index.cshtml
+index 8716e9d..6adbeec 100644
+--- a/src/BikeStore.Web/Views/Home/Index.cshtml
++++ b/src/BikeStore.Web/Views/Home/Index.cshtml
+@@ -49,6 +49,26 @@
+         </div>
+     </article>
+ 
++    <article class="summary-card">
++        <div class="summary-icon blue"><i class="bi bi-box-seam"></i></div>
++        <div class="summary-info">
++            <span class="summary-title">Unidades en stock</span>
++            <strong>@Model.TotalStock</strong>
++            <small>@Model.OutOfStock producto(s) agotado(s)</small>
++            <a class="summary-link blue-link" asp-controller="Bicicletas" asp-action="Index">Revisar inventario</a>
++        </div>
++    </article>
++
++    <article class="summary-card">
++        <div class="summary-icon green"><i class="bi bi-graph-up-arrow"></i></div>
++        <div class="summary-info">
++            <span class="summary-title">Ventas del mes</span>
++            <strong>@Model.MonthRevenue.ToString("C2")</strong>
++            <small>@Model.MonthSales venta(s) acumulada(s)</small>
++            <a class="summary-link green-link" asp-controller="Ventas" asp-action="Index">Ver ventas</a>
++        </div>
++    </article>
++
+     <article class="quick-actions">
+         <a class="quick-button primary-action" asp-controller="Ventas" asp-action="Crear"><i class="bi bi-plus-lg"></i>Nueva venta</a>
+         <a class="quick-button" asp-controller="Bicicletas" asp-action="Crear"><i class="bi bi-bicycle"></i>Nueva bicicleta</a>
+@@ -56,6 +76,13 @@
+     </article>
+ </section>
+ 
++@if (Model.OutOfStock > 0)
++{
++    <div class="alert error">
++        <strong>Atención:</strong> existen @Model.OutOfStock bicicleta(s) sin stock. Revise el inventario antes de registrar nuevas ventas.
++    </div>
++}
++
+ <section class="section-head dashboard-section">
+     <div><span class="eyebrow">ACTIVIDAD</span><h2>Ventas recientes</h2></div>
+     <a class="text-link" asp-controller="Ventas" asp-action="Index">Ver historial →</a>

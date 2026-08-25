@@ -95,12 +95,15 @@ public sealed class BicycleService(IStoreRepository repository, BusinessOptions 
     private void Apply(Bicycle entity, SaveBicycleRequest request)
     {
         entity.CategoryId = request.CategoryId;
-        entity.Brand = request.Brand.Trim();
-        entity.Model = request.Model.Trim();
+        entity.Brand = NormalizeText(request.Brand);
+        entity.Model = NormalizeText(request.Model);
         entity.Price = decimal.Round(request.Price, 2);
         entity.Stock = request.Stock;
         entity.Status = GetStatus(entity.Stock);
     }
+
+    private static string NormalizeText(string value)
+        => string.Join(' ', value.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
     private BicycleStatus GetStatus(int stock)
         => stock == 0 ? BicycleStatus.Agotado : stock <= options.LowStockThreshold ? BicycleStatus.BajoStock : BicycleStatus.Disponible;

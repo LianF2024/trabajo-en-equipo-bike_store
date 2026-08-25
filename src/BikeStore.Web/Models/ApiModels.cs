@@ -102,5 +102,9 @@ public sealed class DashboardVm
     public int Customers { get; init; }
     public int TodaySales { get; init; }
     public decimal TodayRevenue { get; init; }
+    public int TotalStock { get; init; }
+    public int OutOfStock { get; init; }
+    public int MonthSales { get; init; }
+    public decimal MonthRevenue { get; init; }
     public IReadOnlyList<VentaVm> RecentSales { get; init; } = [];
 }

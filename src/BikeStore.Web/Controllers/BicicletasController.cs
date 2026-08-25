@@ -10,6 +10,9 @@ public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
 {
     public async Task<IActionResult> Index(string? nombre, int? categoriaId, string? marca, bool stockBajo, bool agotadas, int limiteStock = 5, CancellationToken cancellationToken = default)
     {
+        nombre = string.IsNullOrWhiteSpace(nombre) ? null : nombre.Trim();
+        marca = string.IsNullOrWhiteSpace(marca) ? null : marca.Trim();
+
         await LoadCategoriesAsync(categoriaId, cancellationToken);
         ViewBag.Nombre = nombre;
         ViewBag.Marca = marca;
@@ -17,12 +20,23 @@ public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
         ViewBag.Agotadas = agotadas;
         ViewBag.LimiteStock = Math.Clamp(limiteStock, 1, 1000);
 
-        var inventory = await api.GetBicyclesAsync(lowStockThreshold: ViewBag.LimiteStock, cancellationToken: cancellationToken);
-        ViewBag.TotalUnidades = inventory.Sum(x => x.Stock);
-        ViewBag.ProductosBajoStock = inventory.Count(x => x.Stock > 0 && x.Stock <= ViewBag.LimiteStock);
-        ViewBag.ProductosAgotados = inventory.Count(x => x.Stock == 0);
+        try
+        {
+            var inventory = await api.GetBicyclesAsync(lowStockThreshold: ViewBag.LimiteStock, cancellationToken: cancellationToken);
+            ViewBag.TotalUnidades = inventory.Sum(x => x.Stock);
+            ViewBag.ProductosBajoStock = inventory.Count(x => x.Stock > 0 && x.Stock <= ViewBag.LimiteStock);
+            ViewBag.ProductosAgotados = inventory.Count(x => x.Stock == 0);
 
-        return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, ViewBag.LimiteStock, cancellationToken));
+            return View(await api.GetBicyclesAsync(nombre, categoriaId, marca, stockBajo, agotadas, ViewBag.LimiteStock, cancellationToken));
+        }
+        catch (ApiException ex)
+        {
+            TempData["Error"] = $"No fue posible consultar las bicicletas: {ex.Message}";
+            ViewBag.TotalUnidades = 0;
+            ViewBag.ProductosBajoStock = 0;
+            ViewBag.ProductosAgotados = 0;
+            return View(Array.Empty<BicicletaVm>());
+        }
     }
 
     public async Task<IActionResult> Crear(CancellationToken cancellationToken)
@@ -54,17 +68,25 @@ public sealed class BicicletasController(IBikeStoreApiClient api) : Controller
 
     public async Task<IActionResult> Editar(int id, CancellationToken cancellationToken)
     {
-        var item = await api.GetBicycleAsync(id, cancellationToken);
-        await LoadCategoriesAsync(item.CategoryId, cancellationToken);
-        return View("Formulario", new BicicletaFormVm
+        try
         {
-            Id = item.Id,
-            CategoryId = item.CategoryId,
-            Brand = item.Brand,
-            Model = item.Model,
-            Price = item.Price,
-            Stock = item.Stock
-        });
+            var item = await api.GetBicycleAsync(id, cancellationToken);
+            await LoadCategoriesAsync(item.CategoryId, cancellationToken);
+            return View("Formulario", new BicicletaFormVm
+            {
+                Id = item.Id,
+                CategoryId = item.CategoryId,
+                Brand = item.Brand,
+                Model = item.Model,
+                Price = item.Price,
+                Stock = item.Stock
+            });
+        }
+        catch (ApiException ex)
+        {
+            TempData["Error"] = $"No fue posible cargar la bicicleta: {ex.Message}";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost, ActionName("Editar"), ValidateAntiForgeryToken]

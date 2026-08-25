@@ -19,10 +19,12 @@ public sealed class SaveBicycleRequest
 
     [Required(ErrorMessage = "La marca es obligatoria.")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "La marca debe tener entre 2 y 100 caracteres.")]
+    [RegularExpression(@"^[\p{L}\p{N}][\p{L}\p{N} .&'/-]*$", ErrorMessage = "La marca contiene caracteres no permitidos.")]
     public string Brand { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El modelo es obligatorio.")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "El modelo debe tener entre 1 y 100 caracteres.")]
+    [RegularExpression(@"^[\p{L}\p{N}][\p{L}\p{N} .&'/_-]*$", ErrorMessage = "El modelo contiene caracteres no permitidos.")]
     public string Model { get; set; } = string.Empty;
 
     public decimal Price { get; set; }

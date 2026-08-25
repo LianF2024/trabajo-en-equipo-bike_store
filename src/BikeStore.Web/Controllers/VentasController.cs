@@ -17,7 +17,22 @@ public sealed class VentasController(IBikeStoreApiClient api) : Controller
             clienteId);
         ViewBag.Desde = desde?.ToString("yyyy-MM-dd");
         ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd");
-        return View(await api.GetSalesAsync(clienteId, desde, hasta, cancellationToken));
+
+        if (desde.HasValue && hasta.HasValue && desde.Value.Date > hasta.Value.Date)
+        {
+            TempData["Error"] = "La fecha inicial no puede ser posterior a la fecha final.";
+            return View(Array.Empty<VentaVm>());
+        }
+
+        try
+        {
+            return View(await api.GetSalesAsync(clienteId, desde, hasta, cancellationToken));
+        }
+        catch (ApiException ex)
+        {
+            TempData["Error"] = $"No fue posible consultar las ventas: {ex.Message}";
+            return View(Array.Empty<VentaVm>());
+        }
     }
 
     public async Task<IActionResult> Detalle(int id, CancellationToken cancellationToken)

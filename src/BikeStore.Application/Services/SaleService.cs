@@ -22,9 +22,20 @@ public sealed class SaleService(IStoreRepository repository, BusinessOptions opt
         var customer = await repository.GetCustomerAsync(request.CustomerId, cancellationToken);
         if (customer is null) throw new BusinessException("El cliente seleccionado no existe.");
 
-        var grouped = request.Items.GroupBy(x => x.BicycleId)
-            .Select(g => new CreateSaleItemRequest { BicycleId = g.Key, Quantity = g.Sum(x => x.Quantity) })
+        if (request.Items.Any(x => x.BicycleId <= 0 || x.Quantity <= 0))
+            throw new BusinessException("Cada detalle debe contener una bicicleta y una cantidad válidas.");
+
+        var grouped = request.Items
+            .GroupBy(x => x.BicycleId)
+            .Select(g => new CreateSaleItemRequest
+            {
+                BicycleId = g.Key,
+                Quantity = g.Sum(x => x.Quantity)
+            })
             .ToList();
+
+        if (grouped.Any(x => x.Quantity > 100))
+            throw new BusinessException("La cantidad total por bicicleta no puede superar 100 unidades.");
 
         await using var transaction = await repository.BeginTransactionAsync(cancellationToken);
         try

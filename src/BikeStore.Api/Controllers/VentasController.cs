@@ -9,6 +9,7 @@ namespace BikeStore.Api.Controllers;
 public sealed class VentasController(ISaleService service) : BikeStoreApiControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<IReadOnlyList<SaleDto>>(StatusCodes.Status200OK)]
     public Task<ActionResult<IReadOnlyList<SaleDto>>> GetAll([FromQuery] int? clienteId, [FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, CancellationToken cancellationToken = default)
         => ExecuteAsync(
             () => service.GetAllAsync(clienteId, desde, hasta, cancellationToken),
@@ -21,12 +22,18 @@ public sealed class VentasController(ISaleService service) : BikeStoreApiControl
             result => Ok(result));
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<SaleDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public Task<ActionResult<SaleDto>> GetById(int id, CancellationToken cancellationToken)
         => ExecuteAsync(
             () => service.GetByIdAsync(id, cancellationToken),
             result => Ok(result));
 
     [HttpPost]
+    [ProducesResponseType<SaleDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public Task<ActionResult<SaleDto>> Create([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
         => ExecuteAsync(
             () => service.CreateAsync(request, cancellationToken),

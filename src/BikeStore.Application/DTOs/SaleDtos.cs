@@ -15,7 +15,7 @@ public sealed class CreateSaleItemRequest
 {
     [Range(1, int.MaxValue, ErrorMessage = "Seleccione una bicicleta válida.")]
     public int BicycleId { get; set; }
-    [Range(1, 1000, ErrorMessage = "La cantidad debe estar entre 1 y 1000.")]
+    [Range(1, 100, ErrorMessage = "La cantidad por línea debe estar entre 1 y 100.")]
     public int Quantity { get; set; }
 }
 
